@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+
+    <title>Exercise 3</title>
+
+    <style>
+      .form-control-borderless {
+        border: none;
+      }
+
+      .form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+      }
+    </style>
+  </head>
+  <body>
+      <div class="row justify-content-center mt-4">
+          <div class="col-12 col-md-10 col-lg-8 text-center">
+              <form class="card card-sm">
+                  <div class="card-body row no-gutters align-items-center">
+                      <div class="col-auto">
+                          <i class="fas fa-search h4 text-body"></i>
+                      </div>
+
+                      <div class="col">
+                          <input class="form-control form-control-lg form-control-borderless" type="search" placeholder="Search Key" id="search">
+                      </div>
+                      <!--end of col-->
+                      <div class="col-auto">
+                          <button class="btn btn-lg btn-success" type="button" onclick="finddata()">Search</button>
+                      </div>
+                      <!--end of col-->
+                  </div>
+              </form>
+              <br>
+              <table id="data" class="table table-resposive">
+                  
+              </table>
+          </div>
+
+      </div>
+    
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script>
+      // function menampilkan data
+      function datafilm(){
+            var request = new XMLHttpRequest();
+            request.open('GET', 'https://swapi.co/api/films', true);
+            request.onload = function () {
+
+            // Begin accessing JSON data here
+            var data = JSON.parse(this.response);
+            console.log(data)
+            if (request.status >= 200 && request.status < 400) {
+                console.log(data.results)
+                val = "<thead class='thead-dark'><tr><th>Title</th><th>Episode ID</th><th>Director</th><th>Release Date</th></tr></thead>";
+                data.results.forEach(item => {
+                    val=val + "<tbody><tr><td>"+item.title+"</td><td>"+item.episode_id+"</td><td>"+item.director+"</td><td>"+item.release_date+"</td></tr></tbody>"
+                });
+
+                document.getElementById('data').innerHTML=val
+            } else {
+              const errorMessage = document.createElement('marquee');
+              errorMessage.textContent = `Gagal Menampilkan data`;
+              app.appendChild(errorMessage);
+            }
+            
+            }
+            // Array.filter
+            request.send();
+        }
+      datafilm();
+
+      // funtion find data
+      function finddata(){
+            
+            if(document.getElementById('search').value == ''){
+                datafilm();
+            }else{
+                var request = new XMLHttpRequest();
+                request.open('GET', 'https://swapi.co/api/films', true);
+                request.onload = function () {
+
+                // Begin accessing JSON data here
+                var data = JSON.parse(this.response);
+               
+                if (request.status >= 200 && request.status < 400) {
+                    let keysearch = document.getElementById('search').value;
+                    let newDataFilter =  "<thead class='thead-dark'><tr><th>Title</th><th>Episode ID</th><th>Director</th><th>Release Date</th></tr></thead>";
+                    data.results.forEach(item => {
+                        if(item.name.includes(keysearch) || item.eye_color.includes(keysearch) ||item.gender.includes(keysearch) || item.hair_color.includes(keysearch) ||item.height.includes(keysearch)){
+                            newDataFilter=newDataFilter +"<tbody><tr><td>"+item.title+"</td><td>"+item.episode_id+"</td><td>"+item.director+"</td><td>"+item.release_date+"</td></tr></tbody>"
+                        }
+                        document.getElementById('data').innerHTML=newDataFilter
+                    });
+                } else {
+                    // console.log('error');
+                }
+                
+                }
+                // Array.filter
+                request.send();
+               
+            }
+        }
+    </script>
+  </body>
+</html>
